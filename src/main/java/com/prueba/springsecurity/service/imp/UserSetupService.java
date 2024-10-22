@@ -18,41 +18,40 @@ public class UserSetupService {
 
     @PostConstruct
     public void init() {
+        createRoles();
+        createUser();
+    }
 
-        // Crear los roles
-        if(!roleRepository.existsByRole("ADMIN")) {
-            RoleEntity role = new RoleEntity();
-            role.setRole("ADMIN");
-            roleRepository.save(role);
-        }
-        if (!roleRepository.existsByRole("USER")) {
-            RoleEntity role = new RoleEntity();
-            role.setRole("USER");
-            roleRepository.save(role);
-        }
-        if (!roleRepository.existsByRole("EDITOR")) {
-            RoleEntity role = new RoleEntity();
-            role.setRole("EDITOR");
-            roleRepository.save(role);
-        }
-        if (!roleRepository.existsByRole("CREATOR")) {
-            RoleEntity role = new RoleEntity();
-            role.setRole("CREATOR");
-            roleRepository.save(role);
-        }
+    private void createRoles() {
+        createRoleIfNotExists("ADMIN");
+        createRoleIfNotExists("USER");
+        createRoleIfNotExists("EDITOR");
+        createRoleIfNotExists("CREATOR");
+    }
 
+    private void createRoleIfNotExists(String roleName) {
+        if(!roleRepository.existsByRoleName(roleName)) {
+            RoleEntity role = new RoleEntity();
+            role.setRoleName(roleName);
+            roleRepository.save(role);
+        }
+    }
+
+    private void createUser() {
         if (!userRepository.existsByUsername("ADMIN")) {
-            // Crea el usuario ADMIN
             UserEntity adminUser = new UserEntity();
             adminUser.setUsername("ADMIN");
-            adminUser.setPassword(passwordEncoder.encode("admin")); // Reemplaza con la contraseña que desees
-            RoleEntity adminRole = roleRepository.findByRole("ADMIN")
-                    .orElseThrow(() -> new RuntimeException("ADMIN role not found"));
-
-            adminUser.getRoles().add(adminRole);
-
+            adminUser.setPassword(passwordEncoder.encode("admin")); // Reemplaza con una contraseña segura
             adminUser.setEnabled(true);
 
+            // Buscar el rol ADMIN
+            RoleEntity adminRole = roleRepository.findByRoleName("ADMIN")
+                    .orElseThrow(() -> new RuntimeException("ADMIN role not found"));
+
+            // Añadir rol ADMIN al usuario
+            adminUser.getRoles().add(adminRole);
+
+            // Guardar usuario en el repositorio
             userRepository.save(adminUser);
         }
     }

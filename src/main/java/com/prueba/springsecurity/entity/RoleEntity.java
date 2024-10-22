@@ -13,9 +13,10 @@ import lombok.NoArgsConstructor;
 public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(length = 11)
+    private Integer roleId;
 
     @Column(length = 45)
-    private String role;
+    private String roleName;
 
 }

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+</head>
+<body>
+<div th:if="${param.error}">
+    Credenciales inválidas.
+</div>
+<div th:if="${param.logout}">
+    Has cerrado sesión.
+</div>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Cerrar Sesión</button>
+</form>
+
+</body>
+</html>
